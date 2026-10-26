@@ -1,6 +1,6 @@
 import { readdir, readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { pool, closePool } from "./pool.ts";
 
 /**
@@ -72,7 +72,7 @@ export async function migrate(): Promise<string[]> {
 }
 
 // Only run when invoked directly (`npm run db:migrate`), not when imported.
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
   migrate()
     .then(closePool)
     .catch(async (err) => {
